@@ -29,13 +29,6 @@ public class BrowserMapper {
         //browserMapper.put(Browser.PHANTOMJS, new WebDriverLazyLoader(PhantomJSDriver.class));
     }
 
-    public static WebDriver getCachedDriver(Browser browser, Capabilities capabilities) {
-        if (!webDriverInstances.containsKey(browser)) {
-            webDriverInstances.put(browser, getDriver(browser, capabilities));
-        }
-        return webDriverInstances.get(browser);
-    }
-
     public static WebDriver getDriver(Browser browser, Capabilities capabilities) {
         WebDriverLazyLoader webDriverLazyLoader = browserMapper.get(browser);
         if (webDriverLazyLoader != null) {

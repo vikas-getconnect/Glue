@@ -3,53 +3,40 @@ package com.atf.utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+
 /**
  * Reads configuration file and sets the common properties required to run seam
  * tests.
  * 
  *
  */
-public class UiConfigReader {
+public class ConfigReader {
 
 	protected static Logger logger = LoggerFactory
-			.getLogger(UiConfigReader.class);
+			.getLogger(ConfigReader.class);
 	private static PropertyProvider propertyProvider;
 
-	private static final String BJN_BASELOCATION = "configs/ui/";
+	private static final String CONFIGLOCATION = "configs/";
 
 
-
-
-
-	public UiConfigReader() {
+	public ConfigReader(){
 
 		String env = System.getProperty("env");
-		String projectName= System.getProperty("project");
+		String type= System.getProperty("type");
 
+		if (type==null || !(type.equals("ui") || type.equals("api"))){
+			logger.error("Pass correct type as 'api' or 'ui'");
+			System.exit(1);
+		}
 		if (env == null) {
 			env = "local";
 		}
-		String propFile=null;
-		if(projectName==null && env.equals("local"))
-			propFile =  BJN_BASELOCATION +"default.properties";
-		else
-			propFile = BJN_BASELOCATION + "env/"+projectName+"/bjn_" + projectName + "_"
-					+ env + ".properties";
-
-		propertyProvider = new PropertyProvider(propFile);
-
-	}
-
-	public UiConfigReader(String projectName) {
-
-		String env = System.getProperty("env");
-
-		if (env == null) {
-			env = "local";
-		}
-
-		String propFile = BJN_BASELOCATION + "env/"+projectName+"/bjn_" + projectName + "_"
-				+ env + ".properties";
+		String propFile=null; 
+		if(env.equals("local"))
+			propFile =  CONFIGLOCATION + type +"/default.properties";
+		else 
+			propFile = CONFIGLOCATION + type +"/"+env + ".properties";
 
 		propertyProvider = new PropertyProvider(propFile);
 
@@ -83,7 +70,15 @@ public class UiConfigReader {
 
 	public void updateProperties(String key,String newValue){
 		String env = System.getProperty("env");
-		String propFile = BJN_BASELOCATION + "env/bjn_" + env + ".properties";
+		String type= System.getProperty("type");
+		if (env == null) {
+			env = "local";
+		}
+		String propFile=null;
+		if(env.equals("local"))
+			propFile =  CONFIGLOCATION + type +"/default.properties";
+		else
+			propFile = CONFIGLOCATION + type +"/"+env + ".properties";
 		PropertyProvider newPropertyProvider  = new PropertyProvider(propFile);
 		newPropertyProvider.setProperty(key,newValue);
 	}

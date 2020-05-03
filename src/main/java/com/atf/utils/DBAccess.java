@@ -1,6 +1,5 @@
 package com.atf.utils;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +23,7 @@ public class DBAccess {
 
 	private static Connection connection;
 
-	private APIConfigReader apiConfig;
+	private ConfigReader apiConfig;
 
 	private String mySQLDatabaseIP;
 	private String mySQLDatabasePort;
@@ -81,7 +80,7 @@ public class DBAccess {
 	private DBAccess() {
 		try {
 
-			apiConfig = new APIConfigReader();
+			apiConfig = new ConfigReader();
 			
 			mySQLDatabaseIP = apiConfig.getValue("mySQLDatabaseIP");
 			mySQLDatabasePort = apiConfig.getValue("mySQLDatabasePort");

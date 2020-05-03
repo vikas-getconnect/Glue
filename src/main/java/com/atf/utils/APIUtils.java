@@ -2,16 +2,12 @@ package com.atf.utils;
 
 //import static org.testng.Assert.assertEquals;
 
-import com.atf.utils.APIConfigReader;
 import static com.jayway.restassured.RestAssured.delete;
 import static com.jayway.restassured.RestAssured.get;
 import static com.jayway.restassured.RestAssured.given;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
@@ -25,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Header;
-import com.jayway.restassured.response.Headers;
 import com.jayway.restassured.response.Response;
 
 
@@ -33,7 +28,7 @@ import com.jayway.restassured.response.Response;
 public class APIUtils {
 
 	static Logger logger = LoggerFactory.getLogger(APIUtils.class);
-	static APIConfigReader apiConfig = new APIConfigReader();
+	static ConfigReader apiConfig = new ConfigReader();
 
 	public static JsonPath getJson(Response res) {
 		String json = res.asString();

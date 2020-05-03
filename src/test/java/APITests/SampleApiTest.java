@@ -18,7 +18,7 @@ public class SampleApiTest extends APIBaseTest{
     protected static Logger logger = LoggerFactory.getLogger(SampleApiTest.class);
     MockAPIService mockAPIService=new MockAPIService();
 
-    @Test
+    @Test(groups = {"sample","api"})
     public void testGetWithQueryParam(){
         Response response = mockAPIService.sampleGet(ResponseCode.OK);
         ResponseBody body = response.body();
@@ -29,12 +29,12 @@ public class SampleApiTest extends APIBaseTest{
         Assert.assertEquals(hm.get("foo2"),"bar2");
     }
 
-    @Test
+    @Test(groups = {"sample1","api"})
     public void testGetWithBasicAuth(){
         Response response = mockAPIService.sampleBasicAuth(ResponseCode.OK,"postman","password");
         ResponseBody body = response.body();
         JsonPath jp=getJson(response);
         logger.info(jp.get("authenticated").toString());
-        Assert.assertEquals(jp.get("authenticated"),true);
+        Assert.assertTrue(jp.get("authenticated"));
     }
 }
