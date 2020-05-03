@@ -1,8 +1,12 @@
 package APITests;
 
+import io.qameta.allure.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.jayway.restassured.response.Response;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.atf.utils.APIUtils.*;
 
@@ -14,15 +18,14 @@ public class MockAPIService {
     /**
      * Retrieves details with query string parameter
      */
-
-    public Response sampleGet(int responseCode) {
-
-        String url = "/get?foo1=bar1&foo2=bar2";
+    @Step("GET {key}={value} with status: {responseCode}")
+    public Response sampleGet(int responseCode,String key,String value) {
+        String url = "/get?"+key+"="+value;
         Response res = GET(responseCode, url);
         return res;
     }
 
-
+    @Step("Authenticate request with {username}/{password} with response: {responseCode}")
     public Response sampleBasicAuth(int responseCode,String username,String password) {
 
         String url = "/basic-auth";
@@ -30,16 +33,5 @@ public class MockAPIService {
         return res;
     }
 
-
-    /**
-     * Retrieves details with query string parameter
-     */
-
-//    public Response postWithForm(int responseCode) {
-//
-//        String url = "/get?foo1=bar1&foo2=bar2";
-//        Response res = POST_with_formParameter(responseCode, url);
-//        return res;
-//    }
 
 }

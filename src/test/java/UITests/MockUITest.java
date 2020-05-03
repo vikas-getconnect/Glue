@@ -2,15 +2,12 @@ package UITests;
 
 import UITests.Pages.LoginPage;
 import UITests.Pages.MyAccount;
-import com.atf.config.APIConfig;
 import com.atf.config.BrowserConfig;
-import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.TimeUnit;
 
 public class MockUITest extends UIBaseTest{
     public static Logger logger = LoggerFactory.getLogger(MockUITest.class);
@@ -40,6 +37,7 @@ public class MockUITest extends UIBaseTest{
                 "Welcome to your account. Here you can manage all of your personal information and orders.");
         Assert.assertEquals(myAccountObj.getAccountName(),BrowserConfig.getUsername());
     }
+
 
 
 }

@@ -6,11 +6,13 @@ import jxl.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class ExcelDataProvider {
 
-    public static Logger LOGGER = LoggerFactory.getLogger("StaticLogger");
+    public static Logger logger = LoggerFactory.getLogger(ExcelDataProvider.class);
 
     public String[][] getTableArray(String xlFilePath, String sheetName,
                                     String tableName) {
@@ -20,8 +22,9 @@ public class ExcelDataProvider {
 
         try {
 
-            ClassLoader cl = getClass().getClassLoader();
-            InputStream in = cl.getResourceAsStream(xlFilePath);
+            File initialFile = new File(xlFilePath);
+            InputStream in = new FileInputStream(initialFile);
+            System.out.println(in);
             Workbook workbook = Workbook.getWorkbook(in);
             Sheet sheet = workbook.getSheet(sheetName);
             int startRow, startCol, endRow, endCol, ci, cj;
@@ -50,7 +53,7 @@ public class ExcelDataProvider {
         return (tabArray);
     }
 
-    public String[][] getTableArrayWithColumnHeaders(String xlFilePath, String sheetName,
+    public String[][] xw(String xlFilePath, String sheetName,
                                                      String tableName) {
 
         String[][] tabArray = null;
@@ -85,5 +88,19 @@ public class ExcelDataProvider {
         }
 
         return (tabArray);
+    }
+
+    public static void main(String[] args) {
+        ExcelDataProvider ex=new ExcelDataProvider();
+        String file=System.getProperty("user.dir")+"/src/test/resources/testdata/users.xls";
+        logger.info(file);
+        String data[][]=ex.getTableArray(file,"emails","email");
+        System.out.println(data);
+        for (String[] row: data) {
+            for (String element: row) {
+                System.out.println(element);
+            }
+
+        }
     }
 }
