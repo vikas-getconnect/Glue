@@ -1,18 +1,11 @@
 package com.atf.utils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.awt.*;
+import java.sql.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
+import com.atf.config.APIConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,200 +208,6 @@ public class DBAccess {
 		return completeData;
 	}
 
-	public List<HashMap<Object, Object>> selectQuery(String sqlQuery) {
-
-		Statement statement;
-		List<HashMap<Object, Object>> result = Collections.emptyList();
-		try {
-			statement = getConnection().createStatement();
-			ResultSet rs = statement.executeQuery(sqlQuery);
-			result = getStructuredData(rs);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
-
-	/**
-	 * enter queryParams as emptyList in case all params are required enter
-	 * criteria list as empty if there is no criteria enter criteria entries
-	 * like <Country, =, 'India', AND>, <Age, =, 10, >
-	 * 
-	 * @param tableName
-	 * @param queryParams
-	 * @param criteriaList
-	 * @return
-	 */
-	public List<HashMap<Object, Object>> selectQuery(String tableName,
-			ArrayList<String> queryParams, ArrayList<Criterion> criteriaList) {
-		StringBuffer sqlQuery = new StringBuffer();
-
-		String params = "";
-		if (queryParams.size() == 0) {
-			params = "*";
-		} else {
-			for (int i = 0; i < queryParams.size(); i++) {
-				params += queryParams.get(i);
-				if (i != (queryParams.size() - 1)) {
-					params += ',';
-				}
-			}
-		}
-
-		String criteria = "";
-		if (criteriaList.size() > 0) {
-			criteria += " where ";
-			for (int i = 0; i < criteriaList.size(); i++) {
-				criteria += criteriaList.get(i);
-				criteria += ' ';
-			}
-		}
-
-		String finalQuery = sqlQuery.append("Select ").append(params)
-				.append(" from ").append(tableName).append(' ')
-				.append(criteria).append(';').toString();
-		logger.info("Built SELECT Query: " + finalQuery);
-
-		return selectQuery(finalQuery);
-	}
-
-	public void updateQuery(String sqlQuery) {
-		try {
-			PreparedStatement ps = getConnection().prepareStatement(sqlQuery);
-			ps.executeUpdate();
-			logger.info("Update performed successfully.:"+sqlQuery);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * enter update values as <paramName, paramValue> list enter criteria list
-	 * as empty if there is no criteria enter criteria entries like <Country, =,
-	 * 'India', AND>, <Age, =, 10, >
-	 * 
-	 * @param tableName
-	 * @param updateValues
-	 * @param criteriaList
-	 */
-	public void updateQuery(String tableName, ArrayList<KeyValue> updateValues,
-			ArrayList<Criterion> criteriaList) {
-		StringBuffer sqlQuery = new StringBuffer();
-
-		String updateParams = "";
-		if (updateValues.size() == 0) {
-			logger.info("Nothing tp update.");
-			return;
-		} else {
-			for (int i = 0; i < updateValues.size(); i++) {
-				updateParams += updateValues.get(i).toString();
-				if (i != (updateValues.size() - 1)) {
-					updateParams += ',';
-				}
-			}
-		}
-
-		String criteria = "";
-		if (criteriaList.size() > 0) {
-			criteria += " where ";
-			for (int i = 0; i < criteriaList.size(); i++) {
-				criteria += criteriaList.get(i);
-			}
-		}
-
-		String finalQuery = sqlQuery.append("Update ").append(tableName)
-				.append(" set ").append(updateParams).append(' ')
-				.append(criteria).append(';').toString();
-
-		logger.info("Built UPDATE Query: " + finalQuery);
-
-		updateQuery(finalQuery);
-	}
-
-	public void insertQuery(String sqlQuery) {
-		try {
-			PreparedStatement ps = getConnection().prepareStatement(sqlQuery);
-			ps.executeUpdate();
-			logger.info("Inserted record successfully.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * enter update values as <paramName, paramValue> list enter criteria list
-	 * as empty if there is no criteria enter criteria entries like <Country, =,
-	 * 'India', AND>, <Age, =, 10, >
-	 * 
-	 * @param tableName
-	 * @param insertPairs
-	 */
-	public void insertQuery(String tableName, ArrayList<KeyValue> insertPairs) {
-		StringBuffer sqlQuery = new StringBuffer();
-
-		if (insertPairs.size() == 0) {
-			logger.info("Nothing to insert.");
-		}
-		String keyList = "(";
-		String valueList = "(";
-
-		for (int i = 0; i < insertPairs.size(); i++) {
-			keyList += insertPairs.get(i).key;
-			valueList += insertPairs.get(i).value;
-			if (i != (insertPairs.size() - 1)) {
-				keyList += ',';
-				valueList += ',';
-			} else {
-				keyList += ')';
-				valueList += ')';
-			}
-		}
-
-		String finalQuery = sqlQuery.append("Insert into ").append(tableName)
-				.append(keyList).append(" values").append(valueList)
-				.append(';').toString();
-
-		logger.info("Built INSERT Query: " + finalQuery);
-
-		insertQuery(finalQuery);
-	}
-
-	public void deleteQuery(String sqlQuery) {
-		try {
-			PreparedStatement ps = getConnection().prepareStatement(sqlQuery);
-			ps.executeUpdate();
-			logger.info("Deleted record successfully.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * enter criteria list as empty if there is no criteria enter criteria
-	 * entries like <Country, =, 'India', AND>, <Age, =, 10, >
-	 * 
-	 * @param tableName
-	 * @param criteriaList
-	 */
-	public void deleteQuery(String tableName, ArrayList<Criterion> criteriaList) {
-		StringBuffer sqlQuery = new StringBuffer();
-
-		String criteria = "";
-		if (criteriaList.size() > 0) {
-			criteria += " where ";
-			for (int i = 0; i < criteriaList.size(); i++) {
-				criteria += criteriaList.get(i);
-			}
-		}
-
-		String finalQuery = sqlQuery.append("Delete from ").append(tableName)
-				.append(criteria).append(';').toString();
-
-		logger.info("Built DELETE Query: " + finalQuery);
-
-		deleteQuery(finalQuery);
-	}
 	
 	
 	public String getvalue(String query){
@@ -428,7 +227,6 @@ public class DBAccess {
 
 	}
 	
-
 	
 	public ArrayList<String> getList(String query){
 		Statement statement;
@@ -472,57 +270,27 @@ public class DBAccess {
 
 	public static void main(String[] args) {
 
-		DBAccess db = DBAccess.getInstance();
+		System.setProperty("type","api");
+		System.setProperty("env","test");
+		HashMap<String, String> dbDeatils=new HashMap<>();
+		try {
+			dbDeatils.put("dbIp", APIConfig.getDbEndpoint());
+			dbDeatils.put("dbPort", APIConfig.getDbPort()
+			);
+			dbDeatils.put("dbUser", APIConfig.getDbUser());
+			dbDeatils.put("dbPwd", APIConfig.getDbPassword());
+			dbDeatils.put("dbName", "user");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 
-		logger.info("\n #1 SELECT USAGE \n");
-		// Usage #1
-		db.selectQuery("Select * from Persons");
-
-		logger.info("\n #2 SELECT USAGE \n");
-		// Usage #2
-		ArrayList<String> params = new ArrayList<String>();
-		params.add("LastName");
-		params.add("FirstName");
-		ArrayList<Criterion> criteria = new ArrayList<Criterion>();
-		criteria.add(db.new Criterion("Address", "=", "'KCHalli'", "AND "));
-		criteria.add(db.new Criterion("FirstName", "=", "'Vidit'", ""));
-		db.selectQuery("Persons", params, criteria);
-
-		logger.info("\n #3 UPDATE USAGE \n");
-		// Usage #3
-		db.updateQuery("Update Persons set Address='Whitefield' where FirstName='Gopal'");
-
-		logger.info("\n #4 UPDATE USAGE \n");
-		// Usage #4
-		ArrayList<KeyValue> updateParams = new ArrayList<KeyValue>();
-		updateParams.add(db.new KeyValue("Address", "'KCHalli'"));
-		ArrayList<Criterion> updateCriteria = new ArrayList<Criterion>();
-		updateCriteria.add(db.new Criterion("FirstName", "=", "'Vidit'", ""));
-		db.updateQuery("Persons", updateParams, updateCriteria);
-
-		logger.info("\n #5 INSERT USAGE \n");
-		// Usage #5
-		db.insertQuery("Insert into Persons values (3, 'testln', 'testfn', 'BTM1', 'Bangalore')");
-
-		logger.info("\n #6 INSERT USAGE \n");
-		// Usage #6
-		ArrayList<KeyValue> insertParams = new ArrayList<KeyValue>();
-		insertParams.add(db.new KeyValue("PersonId", "4"));
-		insertParams.add(db.new KeyValue("FirstName", "'testfn1'"));
-		insertParams.add(db.new KeyValue("LastName", "'testln1'"));
-		insertParams.add(db.new KeyValue("Address", "'testAdd1'"));
-		insertParams.add(db.new KeyValue("City", "'Bangalore'"));
-		db.insertQuery("Persons", insertParams);
-
-		logger.info("\n #7 DELETE USAGE \n");
-		// Usage #7
-		db.deleteQuery("Delete from Persons where PersonID=3");
-
-		logger.info("\n #8 DELETE USAGE \n");
-		// Usage #8
-		ArrayList<Criterion> deleteCriteria = new ArrayList<Criterion>();
-		deleteCriteria.add(db.new Criterion("PersonID", "=", "4", ""));
-		db.deleteQuery("Persons", deleteCriteria);
+		DBAccess db = DBAccess.getInstance(dbDeatils);
+		ArrayList<ArrayList<String>> data = db.getTable("Select * from user");
+		for (ArrayList<String > al:data) {
+			for (String s: al)
+				System.out.print(":"+s);
+			System.out.println("\n");
+		}
 
 		db.closeConnection();
 	}

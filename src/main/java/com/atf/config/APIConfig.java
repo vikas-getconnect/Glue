@@ -15,6 +15,7 @@ public class APIConfig {
     public static final String DB_USER = "db.username";
     public static final String DB_PASSWORD = "db.password";
     public static final String DB_DRIVER = "db.driver-class-name";
+    public static final String DB_PORT = "db.port";
 
 
     public static Logger logger = LoggerFactory.getLogger(APIConfig.class);
@@ -64,9 +65,9 @@ public class APIConfig {
         return properties.getValue(DB_PASSWORD);
     }
 
-    public static String getDbDriver() throws Exception {
+    public static String getDbPort() throws Exception {
         ConfigReader properties = getProperties();
-        return properties.getValue(DB_DRIVER);
+        return properties.getValue(DB_PORT);
     }
 
     protected APIConfig() {

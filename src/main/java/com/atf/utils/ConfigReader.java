@@ -17,7 +17,7 @@ public class ConfigReader {
 			.getLogger(ConfigReader.class);
 	private static PropertyProvider propertyProvider;
 
-	private static final String CONFIGLOCATION = "configs/";
+	private static final String CONFIGLOCATION = System.getProperty("user.dir")+"/src/test/resources/configs/";
 
 
 	public ConfigReader(){

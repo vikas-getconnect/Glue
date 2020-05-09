@@ -1,9 +1,6 @@
 package com.atf.utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -23,8 +20,8 @@ public class PropertyProvider {
 	public PropertyProvider(String fileName) {
 		dictionary = new Properties();
 		try {
-			ClassLoader cl = getClass().getClassLoader();
-			InputStream in = cl.getResourceAsStream(fileName);
+			File initialFile = new File(fileName);
+			InputStream in = new FileInputStream(initialFile);
 			if (in == null)
 				throw new IllegalArgumentException("file not found!");
 			dictionary.load(in);
