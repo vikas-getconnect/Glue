@@ -20,38 +20,38 @@ import java.util.HashMap;
 import static com.atf.utils.APIUtils.getJson;
 
 
-public class SampleApiTest extends APIBaseTest{
+public class SampleApiTest extends APIBaseTest {
     protected static Logger logger = LoggerFactory.getLogger(SampleApiTest.class);
-    MockAPIService mockAPIService=new MockAPIService();
-    ExcelDataProvider ex=new ExcelDataProvider();
+    MockAPIService mockAPIService = new MockAPIService();
+    ExcelDataProvider ex = new ExcelDataProvider();
 
     @DataProvider(name = "getParam")
-    public Object[][] getParam(){
+    public Object[][] getParam() {
         String[][] params = ex.getTableArray(DATA_PATH + "users.xls", "params", "param");
         return params;
     }
 
-    @Test(groups = {"sample","api"},dataProvider = "getParam")
+    @Test(groups = {"sample", "api"}, dataProvider = "getParam")
     @Description("Test GET api with query params")
     @Severity(SeverityLevel.MINOR)
     @Story("Test GET api with query params")
-    public void testGetWithQueryParam(String key,String value){
-        Response response = mockAPIService.sampleGet(ResponseCode.OK,key,value);
+    public void testGetWithQueryParam(String key, String value) {
+        Response response = mockAPIService.sampleGet(ResponseCode.OK, key, value);
         ResponseBody body = response.body();
-        JsonPath jp=getJson(response);
+        JsonPath jp = getJson(response);
         logger.info(jp.get("args").toString());
-        HashMap hm=jp.get("args");
-        Assert.assertEquals(hm.get(key),value);
+        HashMap hm = jp.get("args");
+        Assert.assertEquals(hm.get(key), value);
     }
 
-    @Test(groups = {"sample1","api"})
+    @Test(groups = {"sample1", "api"})
     @Description("Test GET api with username password")
     @Severity(SeverityLevel.CRITICAL)
     @Story("Test GET api with username password")
-    public void testGetWithBasicAuth(){
-        Response response = mockAPIService.sampleBasicAuth(ResponseCode.OK,"postman","password");
+    public void testGetWithBasicAuth() {
+        Response response = mockAPIService.sampleBasicAuth(ResponseCode.OK, "postman", "password");
         ResponseBody body = response.body();
-        JsonPath jp=getJson(response);
+        JsonPath jp = getJson(response);
         logger.info(jp.get("authenticated").toString());
         Assert.assertTrue(jp.get("authenticated"));
     }

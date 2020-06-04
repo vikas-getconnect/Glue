@@ -6,19 +6,17 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-//import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
 import java.util.HashMap;
 import java.util.Map;
 
+//import org.openqa.selenium.phantomjs.PhantomJSDriver;
+
 
 public class BrowserMapper {
-    private String name;
-
     private static Map<Browser, WebDriverLazyLoader> browserMapper = new HashMap<Browser, WebDriverLazyLoader>();
     private static Map<Browser, WebDriver> webDriverInstances = new HashMap<Browser, WebDriver>();
-
 
     static {
         browserMapper.put(Browser.chrome, new WebDriverLazyLoader(ChromeDriver.class));
@@ -29,6 +27,13 @@ public class BrowserMapper {
         //browserMapper.put(Browser.PHANTOMJS, new WebDriverLazyLoader(PhantomJSDriver.class));
     }
 
+    private String name;
+
+    /**
+     * @param browser
+     * @param capabilities
+     * @return
+     */
     public static WebDriver getDriver(Browser browser, Capabilities capabilities) {
         WebDriverLazyLoader webDriverLazyLoader = browserMapper.get(browser);
         if (webDriverLazyLoader != null) {

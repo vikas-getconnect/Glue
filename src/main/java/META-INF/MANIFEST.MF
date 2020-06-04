@@ -1,0 +1,33 @@
+Manifest-Version: 1.0
+Class-Path: json-path-2.9.0.jar jetty-util-9.4.8.v20180619.jar jcomman
+ der-1.72.jar websocket-api-9.4.8.v20180619.jar neko-htmlunit-2.30.jar
+  selenium-server-3.14.0.jar commons-lang3-3.7.jar groovy-json-2.4.4.j
+ ar mysql-connector-java-8.0.18.jar error_prone_annotations-2.1.3.jar 
+ selenium-api-3.14.0.jar hamcrest-core-1.3.jar jetty-client-9.4.8.v201
+ 80619.jar commons-text-1.1.jar selenium-firefox-driver-3.14.0.jar sel
+ enium-chrome-driver-3.14.0.jar aopalliance-1.0.jar rest-assured-commo
+ n-2.9.0.jar httpmime-4.5.5.jar checker-compat-qual-2.0.0.jar junit-4.
+ 12.jar allure-java-commons-2.13.3.jar xml-apis-1.4.01.jar animal-snif
+ fer-annotations-1.14.jar jsr305-1.3.9.jar slf4j-api-1.7.25.jar jackso
+ n-core-2.9.8.jar jetty-io-9.4.8.v20180619.jar commons-net-3.6.jar jso
+ n-simple-1.1.1.jar selenium-opera-driver-3.14.0.jar commons-logging-1
+ .2.jar groovy-xml-2.4.4.jar serializer-2.7.2.jar httpcore-4.4.9.jar h
+ tmlunit-cssparser-1.0.0.jar commons-exec-1.3.jar log4j-1.2.14.jar tes
+ tng-7.1.0.jar jcip-annotations-1.0.jar xalan-2.7.2.jar byte-buddy-1.8
+ .15.jar xercesImpl-2.11.0.jar joor-java-8-0.9.10.jar tagsoup-1.2.1.ja
+ r tika-core-1.20.jar htmlunit-driver-2.30.0.jar javax.inject-1.jar gu
+ ava-25.0-jre.jar selenium-remote-driver-3.14.0.jar xml-path-2.9.0.jar
+  websocket-client-9.4.8.v20180619.jar jxl-2.6.12.jar selenium-edge-dr
+ iver-3.14.0.jar htmlunit-2.30.jar rest-assured-2.9.0.jar javax.servle
+ t-api-3.1.0.jar selenium-java-3.14.0.jar selenium-safari-driver-3.14.
+ 0.jar jackson-databind-2.9.8.jar groovy-2.4.4.jar hamcrest-library-1.
+ 3.jar selenium-support-3.14.0.jar jackson-annotations-2.9.0.jar allur
+ e-model-2.13.3.jar okhttp-3.10.0.jar jetty-http-9.4.8.v20180619.jar s
+ nakeyaml-1.19.jar commons-io-2.6.jar jetty-repacked-9.4.8.v20180619.j
+ ar selenium-ie-driver-3.14.0.jar slf4j-jdk14-1.7.25.jar fluentlenium-
+ core-0.10.3.jar jetty-xml-9.4.8.v20180619.jar okio-1.14.1.jar allure-
+ testng-2.13.3.jar websocket-common-9.4.8.v20180619.jar protobuf-java-
+ 3.6.1.jar htmlunit-core-js-2.28.jar guice-4.1.0-no_aop.jar j2objc-ann
+ otations-1.1.jar httpclient-4.5.5.jar commons-codec-1.10.jar
+Main-Class: 
+

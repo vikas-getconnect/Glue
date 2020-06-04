@@ -10,10 +10,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * Utility class to read data from excel sheet
+ */
 public class ExcelDataProvider {
 
     public static Logger logger = LoggerFactory.getLogger(ExcelDataProvider.class);
 
+    public static void main(String[] args) {
+        ExcelDataProvider ex = new ExcelDataProvider();
+        String file = System.getProperty("user.dir") + "/src/test/resources/testdata/users.xls";
+        logger.info(file);
+        String data[][] = ex.getTableArray(file, "emails", "email");
+        System.out.println(data);
+        for (String[] row : data) {
+            for (String element : row) {
+                System.out.println(element);
+            }
+
+        }
+    }
+
+    /**
+     * @param xlFilePath
+     * @param sheetName
+     * @param tableName
+     * @return
+     */
     public String[][] getTableArray(String xlFilePath, String sheetName,
                                     String tableName) {
 
@@ -53,8 +76,14 @@ public class ExcelDataProvider {
         return (tabArray);
     }
 
+    /**
+     * @param xlFilePath
+     * @param sheetName
+     * @param tableName
+     * @return
+     */
     public String[][] xw(String xlFilePath, String sheetName,
-                                                     String tableName) {
+                         String tableName) {
 
         String[][] tabArray = null;
 
@@ -88,19 +117,5 @@ public class ExcelDataProvider {
         }
 
         return (tabArray);
-    }
-
-    public static void main(String[] args) {
-        ExcelDataProvider ex=new ExcelDataProvider();
-        String file=System.getProperty("user.dir")+"/src/test/resources/testdata/users.xls";
-        logger.info(file);
-        String data[][]=ex.getTableArray(file,"emails","email");
-        System.out.println(data);
-        for (String[] row: data) {
-            for (String element: row) {
-                System.out.println(element);
-            }
-
-        }
     }
 }

@@ -9,10 +9,17 @@ import java.util.zip.ZipInputStream;
 import static com.gargoylesoftware.htmlunit.javascript.host.canvas.WebGLRenderingContext.BUFFER_SIZE;
 
 public class DownloadHelper {
-    private static final String chromeUrl_mac="https://chromedriver.storage.googleapis.com/2.42/chromedriver_mac64.zip";
-    private static final String downlaoadPath="/Users/vikaschaudhary/workspace/Glue/src/main/resources/drivers/";
+    private static final String chromeUrl_mac = "https://chromedriver.storage.googleapis.com/2.42/chromedriver_mac64.zip";
+    private static final String downlaoadPath = "/src/main/resources/drivers/";
 
-    public void downloadDriver(){
+    public static void main(String[] args) throws IOException {
+        DownloadHelper dh = new DownloadHelper();
+        dh.downloadDriver();
+        dh.unzip(downlaoadPath + "chromedriver.zip", downlaoadPath);
+        dh.makeFileExecutable(downlaoadPath + "chromedriver");
+    }
+
+    public void downloadDriver() {
         try {
             URL url = new URL(chromeUrl_mac);
             URLConnection conn = url.openConnection();
@@ -23,7 +30,9 @@ public class DownloadHelper {
             while ((count = in.read(b)) >= 0) {
                 out.write(b, 0, count);
             }
-            out.flush(); out.close(); in.close();
+            out.flush();
+            out.close();
+            in.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,6 +42,7 @@ public class DownloadHelper {
     /**
      * Extracts a zip file specified by the zipFilePath to a directory specified by
      * destDirectory (will be created if does not exists)
+     *
      * @param zipFilePath
      * @param destDirectory
      * @throws IOException
@@ -63,6 +73,7 @@ public class DownloadHelper {
 
     /**
      * Extracts a zip entry (file entry)
+     *
      * @param zipIn
      * @param filePath
      * @throws IOException
@@ -77,20 +88,13 @@ public class DownloadHelper {
         bos.close();
     }
 
-    public void makeFileExecutable(String fileName){
+    public void makeFileExecutable(String fileName) {
         File file = new File(fileName);
-        if(file.exists()) {
+        if (file.exists()) {
             file.setExecutable(true);
             file.setReadable(true);
             file.setWritable(true);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        DownloadHelper dh=new DownloadHelper();
-        dh.downloadDriver();
-        dh.unzip(downlaoadPath + "chromedriver.zip",downlaoadPath);
-        dh.makeFileExecutable(downlaoadPath + "chromedriver");
     }
 
 }

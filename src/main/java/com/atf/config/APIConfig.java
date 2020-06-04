@@ -4,8 +4,9 @@ import com.atf.utils.ConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
+/**
+ * Reads the api properties file params
+ */
 public class APIConfig {
     public static final String BASE_URL = "baseUrl";
     public static final String UserName = "userName";
@@ -20,11 +21,15 @@ public class APIConfig {
 
     public static Logger logger = LoggerFactory.getLogger(APIConfig.class);
 
-    private static ConfigReader conf=null;
+    private static ConfigReader conf = null;
+
+    protected APIConfig() {
+        // do nothing
+    }
 
     private static ConfigReader getProperties() throws Exception {
         // new code added starts - This ensures that the property file is only loaded once.
-        if(conf==null) {
+        if (conf == null) {
             conf = new ConfigReader();
         }
         return conf;
@@ -68,9 +73,5 @@ public class APIConfig {
     public static String getDbPort() throws Exception {
         ConfigReader properties = getProperties();
         return properties.getValue(DB_PORT);
-    }
-
-    protected APIConfig() {
-        // do nothing
     }
 }

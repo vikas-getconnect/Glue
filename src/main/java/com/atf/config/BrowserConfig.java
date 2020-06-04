@@ -1,14 +1,12 @@
 package com.atf.config;
 
-import com.atf.browser.Browser;
 import com.atf.utils.ConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
+/**
+ * Reads the UI/Browser properties file params
+ */
 public abstract class BrowserConfig {
     public static final String BROWSER_TYPE = "browser.type";
     public static final String username = "browser.username";
@@ -28,60 +26,63 @@ public abstract class BrowserConfig {
     public static final String DIM_X = "dimx";
     public static final String DIM_Y = "dimy";
 
-    public static final String URL="app.url";
+    public static final String URL = "app.url";
 
     public static Logger logger = LoggerFactory.getLogger(BrowserConfig.class);
 
-    private static ConfigReader conf=null;
+    private static ConfigReader conf = null;
+
+    protected BrowserConfig() {
+        // do nothing
+    }
 
     private static ConfigReader getProperties() throws Exception {
         // new code added starts - This ensures that the property file is only loaded once.
-        if(conf==null) {
+        if (conf == null) {
             conf = new ConfigReader();
         }
         return conf;
     }
 
-
     public static String getBrowserType() throws Exception {
         ConfigReader properties = getProperties();
-        return  System.getProperty(BROWSER_TYPE) != null ?
+        return System.getProperty(BROWSER_TYPE) != null ?
                 System.getProperty(BROWSER_TYPE) : properties.getValue(BROWSER_TYPE);
     }
 
     public static String getBrowserProperties() throws Exception {
         ConfigReader properties = getProperties();
-        return  System.getProperty(BROWSER_TYPE) != null ?
+        return System.getProperty(BROWSER_TYPE) != null ?
                 System.getProperty(BROWSER_TYPE) : properties.getValue(BROWSER_TYPE);
     }
 
     public static int getElementMinTimeout() throws Exception {
         ConfigReader properties = getProperties();
-        return  Integer.parseInt(System.getProperty(ELEMENT_MIN_TIMEOUT) != null ?
+        return Integer.parseInt(System.getProperty(ELEMENT_MIN_TIMEOUT) != null ?
                 System.getProperty(ELEMENT_MIN_TIMEOUT) : properties.getValue(ELEMENT_MIN_TIMEOUT));
     }
 
     public static int getElementMaxTimeout() throws Exception {
         ConfigReader properties = getProperties();
-        return  Integer.parseInt(System.getProperty(ELEMENT_MAX_TIMEOUT) != null ?
+        return Integer.parseInt(System.getProperty(ELEMENT_MAX_TIMEOUT) != null ?
                 System.getProperty(ELEMENT_MAX_TIMEOUT) : properties.getValue(ELEMENT_MAX_TIMEOUT));
     }
 
     public static int getPageLoadMaxTimeOut() throws Exception {
         ConfigReader properties = getProperties();
-        return  Integer.parseInt(System.getProperty(PAGELOAD_MAX_TIMEOUT) != null ?
+        return Integer.parseInt(System.getProperty(PAGELOAD_MAX_TIMEOUT) != null ?
                 System.getProperty(PAGELOAD_MAX_TIMEOUT) : properties.getValue(PAGELOAD_MAX_TIMEOUT));
     }
 
     public static int getHighDimX() throws Exception {
         ConfigReader properties = getProperties();
-        return  Integer.parseInt(System.getProperty(HIGH_DIM_X) != null ?
+        return Integer.parseInt(System.getProperty(HIGH_DIM_X) != null ?
                 System.getProperty(HIGH_DIM_X) : properties.getValue(HIGH_DIM_X));
     }
 
     public static int getHighDimY() throws Exception {
         ConfigReader properties = getProperties();
-        return  Integer.parseInt(System.getProperty(HIGH_DIM_Y) != null ?
+        return Integer.parseInt(System.getProperty(HIGH_DIM_Y) != null ?
                 System.getProperty(HIGH_DIM_Y) : properties.getValue(HIGH_DIM_Y));
     }
 
@@ -143,10 +144,6 @@ public abstract class BrowserConfig {
         ConfigReader properties = getProperties();
         return System.getProperty(username) != null ?
                 System.getProperty(username) : properties.getValue(username);
-    }
-
-    protected BrowserConfig() {
-        // do nothing
     }
 
 }

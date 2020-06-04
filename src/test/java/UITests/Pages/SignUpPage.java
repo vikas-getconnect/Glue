@@ -22,7 +22,7 @@ public class SignUpPage {
     public FluentWebElement lastName;
 
     @FindBy(id = "email")
-    public  FluentWebElement email;
+    public FluentWebElement email;
 
     @FindBy(id = "passwd")
     public FluentWebElement password;

@@ -1,297 +1,298 @@
 package com.atf.utils;
 
-import java.awt.*;
-import java.sql.*;
-import java.util.*;
-import java.util.List;
-
 import com.atf.config.APIConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Utility class to connect and query mysql server
+ */
 public class DBAccess {
-	
-	protected static Logger logger = LoggerFactory.getLogger(DBAccess.class);
-	private static DBAccess instance;
 
-	private static Connection connection;
+    protected static Logger logger = LoggerFactory.getLogger(DBAccess.class);
+    private static DBAccess instance;
 
-	private ConfigReader apiConfig;
+    private static Connection connection;
 
-	private String mySQLDatabaseIP;
-	private String mySQLDatabasePort;
-	private String mySQLDBUser;
-	private String mySQLDBPwd;
-	private String mySQLDB;
-	private String databaseURL;
+    private ConfigReader apiConfig;
 
-	class Criterion {
-		private String key;
-		private String operator;
-		private String value;
-		private String criteriaOp;
+    private String mySQLDatabaseIP;
+    private String mySQLDatabasePort;
+    private String mySQLDBUser;
+    private String mySQLDBPwd;
+    private String mySQLDB;
+    private String databaseURL;
 
-		public Criterion(String key, String operator, String value,
-				String criteriaOp) {
-			this.key = key;
-			this.value = value;
-			this.operator = operator;
-			this.criteriaOp = criteriaOp;
-		}
+    private DBAccess() {
+        try {
 
-		@Override
-		public String toString() {
-			return key + operator + value + ' ' + criteriaOp;
-		}
-	}
+            apiConfig = new ConfigReader();
 
-	class KeyValue {
-		private String key;
-		private String value;
+            mySQLDatabaseIP = apiConfig.getValue("mySQLDatabaseIP");
+            mySQLDatabasePort = apiConfig.getValue("mySQLDatabasePort");
+            mySQLDBUser = apiConfig.getValue("mySQLDBUser");
+            mySQLDBPwd = apiConfig.getValue("mySQLDBPwd");
+            mySQLDB = apiConfig.getValue("mySQLDB");
 
-		public KeyValue(String key, String value) {
-			this.key = key;
-			this.value = value;
-		}
+            logger.info("\n\nINFO: DBConnection is being constructed by THREAD="
+                    + Thread.currentThread().getName() + "\n\n");
+            setUpConnection();
 
-		@Override
-		public String toString() {
-			return key + "=" + value;
-		}
-	}
-	private void setUpConnection() throws SQLException, InstantiationException,
-			IllegalAccessException, ClassNotFoundException {
-		databaseURL = "jdbc:mysql://" + mySQLDatabaseIP + ":"
-				+ mySQLDatabasePort + '/' + mySQLDB;
+        } catch (ClassNotFoundException ex) {
+            logger.info("Error in connecting DB");
+            ex.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		connection = DriverManager.getConnection(databaseURL, mySQLDBUser,
-				mySQLDBPwd);
-		connection.setAutoCommit(true);
-	}
+    private DBAccess(Map<String, String> dbDeatils) {
+        try {
+            mySQLDatabaseIP = dbDeatils.get("dbIp");
+            mySQLDatabasePort = dbDeatils.get("dbPort");
+            mySQLDBUser = dbDeatils.get("dbUser");
+            mySQLDBPwd = dbDeatils.get("dbPwd");
+            mySQLDB = dbDeatils.get("dbName");
+            System.out
+                    .println("\n\nINFO: DBConnection is being constructed by THREAD="
+                            + Thread.currentThread().getName() + "\n\n");
+            setUpConnection();
 
-	private DBAccess() {
-		try {
+        } catch (ClassNotFoundException ex) {
+            logger.info("Error in connecting DB");
+            ex.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-			apiConfig = new ConfigReader();
-			
-			mySQLDatabaseIP = apiConfig.getValue("mySQLDatabaseIP");
-			mySQLDatabasePort = apiConfig.getValue("mySQLDatabasePort");
-			mySQLDBUser = apiConfig.getValue("mySQLDBUser");
-			mySQLDBPwd = apiConfig.getValue("mySQLDBPwd");
-			mySQLDB = apiConfig.getValue("mySQLDB");
+    public static DBAccess getInstance() {
+        instance = new DBAccess();
+        return instance;
+    }
 
-			logger.info("\n\nINFO: DBConnection is being constructed by THREAD="
-							+ Thread.currentThread().getName() + "\n\n");
-			setUpConnection();
+    public static DBAccess getInstance(Map<String, String> dbDetails) {
+        instance = new DBAccess(dbDetails);
+        return instance;
+    }
 
-		} catch (ClassNotFoundException ex) {
-			logger.info("Error in connecting DB");
-			ex.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private DBAccess(Map <String,String> dbDeatils) {
-		try {
-			 mySQLDatabaseIP = dbDeatils.get("dbIp");
-			 mySQLDatabasePort = dbDeatils.get("dbPort");
-			 mySQLDBUser = dbDeatils.get("dbUser");
-			 mySQLDBPwd = dbDeatils.get("dbPwd");
-			 mySQLDB = dbDeatils.get("dbName");
-			System.out
-					.println("\n\nINFO: DBConnection is being constructed by THREAD="
-							+ Thread.currentThread().getName() + "\n\n");
-			setUpConnection();
+    public static Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            System.out
+                    .println("\n\nINFO: DBConnection is being (re)constructed by THREAD="
+                            + Thread.currentThread().getName() + "\n\n");
+            try {
+                getInstance().setUpConnection();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return connection;
+    }
 
-		} catch (ClassNotFoundException ex) {
-			logger.info("Error in connecting DB");
-			ex.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void main(String[] args) {
 
-	public static DBAccess getInstance() {
-		instance = new DBAccess();
-		return instance;
-	}
-	
-	public static DBAccess getInstance(Map <String,String> dbDetails) {
-		instance = new DBAccess(dbDetails);
-		return instance;
-	}
+        System.setProperty("type", "api");
+        System.setProperty("env", "test");
+        HashMap<String, String> dbDeatils = new HashMap<>();
+        try {
+            dbDeatils.put("dbIp", APIConfig.getDbEndpoint());
+            dbDeatils.put("dbPort", APIConfig.getDbPort()
+            );
+            dbDeatils.put("dbUser", APIConfig.getDbUser());
+            dbDeatils.put("dbPwd", APIConfig.getDbPassword());
+            dbDeatils.put("dbName", "user");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	public static Connection getConnection() throws SQLException {
-		if (connection == null || connection.isClosed()) {
-			System.out
-					.println("\n\nINFO: DBConnection is being (re)constructed by THREAD="
-							+ Thread.currentThread().getName() + "\n\n");
-			try {
-				getInstance().setUpConnection();
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return connection;
-	}
+        DBAccess db = DBAccess.getInstance(dbDeatils);
+        ArrayList<ArrayList<String>> data = db.getTable("Select * from user");
+        for (ArrayList<String> al : data) {
+            for (String s : al)
+                System.out.print(":" + s);
+            System.out.println("\n");
+        }
 
-	public void closeConnection() {
-		try {
-			logger.info("\n\nINFO: DBConnection being closed by THREAD="
-					+ Thread.currentThread().getName() + "\n\n");
-			connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+        db.closeConnection();
+    }
 
-	/**
-	 * Crude method. Returns raw access to ResultSet
-	 * 
-	 * @param query
-	 * @return
-	 */
-	public ResultSet executeSQLQuery(String query) {
-		ResultSet resultSet = null;
+    private void setUpConnection() throws SQLException, InstantiationException,
+            IllegalAccessException, ClassNotFoundException {
+        databaseURL = "jdbc:mysql://" + mySQLDatabaseIP + ":"
+                + mySQLDatabasePort + '/' + mySQLDB;
 
-		try {
-			
-			Statement statement = getConnection().createStatement();
-			resultSet = statement.executeQuery(query);
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
+        connection = DriverManager.getConnection(databaseURL, mySQLDBUser,
+                mySQLDBPwd);
+        connection.setAutoCommit(true);
+    }
 
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
+    public void closeConnection() {
+        try {
+            logger.info("\n\nINFO: DBConnection being closed by THREAD="
+                    + Thread.currentThread().getName() + "\n\n");
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-		return resultSet;
-	}
+    /**
+     * Crude method. Returns raw access to ResultSet
+     *
+     * @param query
+     * @return
+     */
+    public ResultSet executeSQLQuery(String query) {
+        ResultSet resultSet = null;
 
-	/**
-	 * This returns a more structured data as List of <K,V> pairs where
-	 * K=columnName & V=value
-	 * 
-	 * @param rs
-	 * @return
-	 */
-	public List<HashMap<Object, Object>> getStructuredData(ResultSet rs) {
-		HashMap<Object, Object> row;
-		List<HashMap<Object, Object>> completeData = new ArrayList<HashMap<Object, Object>>();
+        try {
 
-		try {
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int columns = rsmd.getColumnCount();
-			while (rs.next()) {
-				row = new HashMap<Object, Object>();
-				for (int i = 1; i <= columns; i++) {
-					row.put(rsmd.getColumnName(i), rs.getObject(i));
-				}
-				completeData.add(row);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+            Statement statement = getConnection().createStatement();
+            resultSet = statement.executeQuery(query);
 
-		return completeData;
-	}
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
-	
-	
-	public String getvalue(String query){
-		Statement statement;
-		String result=null;
-		try {
-			statement = getConnection().createStatement();
-			ResultSet rs = statement.executeQuery(query);
-			rs.next();
-			result=rs.getString(1);
-			logger.info("query excuted:"+query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		closeConnection();
-		return result;
+        return resultSet;
+    }
 
-	}
-	
-	
-	public ArrayList<String> getList(String query){
-		Statement statement;
-		ArrayList<String> result=new ArrayList<String>();
-		try {
-			statement = getConnection().createStatement();
-			ResultSet rs = statement.executeQuery(query);
-			while(rs.next()){
-			result.add(rs.getString(1));
-			}
-			logger.info("query excuted:"+query);
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		closeConnection();
-		return result;
-	}
-	
-	public ArrayList<ArrayList<String>> getTable(String query){
-		Statement statement;
-		ArrayList<ArrayList<String>> result=new ArrayList<ArrayList<String>>();
-		try {
-			statement = getConnection().createStatement();
-			ResultSet rs = statement.executeQuery(query);
-			while(rs.next()){
-			 ArrayList<String> row=new ArrayList<String>();
-			 for(int i=0;i<rs.getMetaData().getColumnCount();i++)
-			 {
-				 row.add(rs.getString(i+1));
-				 
-			 }
-			 	result.add(row);
-			}
-			logger.info("query excuted:"+query);
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-		}
-		closeConnection();
-		return result;
-	}
+    /**
+     * This returns a more structured data as List of <K,V> pairs where
+     * K=columnName & V=value
+     *
+     * @param rs
+     * @return List
+     */
+    public List<HashMap<Object, Object>> getStructuredData(ResultSet rs) {
+        HashMap<Object, Object> row;
+        List<HashMap<Object, Object>> completeData = new ArrayList<HashMap<Object, Object>>();
 
-	public static void main(String[] args) {
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columns = rsmd.getColumnCount();
+            while (rs.next()) {
+                row = new HashMap<Object, Object>();
+                for (int i = 1; i <= columns; i++) {
+                    row.put(rsmd.getColumnName(i), rs.getObject(i));
+                }
+                completeData.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-		System.setProperty("type","api");
-		System.setProperty("env","test");
-		HashMap<String, String> dbDeatils=new HashMap<>();
-		try {
-			dbDeatils.put("dbIp", APIConfig.getDbEndpoint());
-			dbDeatils.put("dbPort", APIConfig.getDbPort()
-			);
-			dbDeatils.put("dbUser", APIConfig.getDbUser());
-			dbDeatils.put("dbPwd", APIConfig.getDbPassword());
-			dbDeatils.put("dbName", "user");
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+        return completeData;
+    }
 
-		DBAccess db = DBAccess.getInstance(dbDeatils);
-		ArrayList<ArrayList<String>> data = db.getTable("Select * from user");
-		for (ArrayList<String > al:data) {
-			for (String s: al)
-				System.out.print(":"+s);
-			System.out.println("\n");
-		}
+    public String getvalue(String query) {
+        Statement statement;
+        String result = null;
+        try {
+            statement = getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            rs.next();
+            result = rs.getString(1);
+            logger.info("query excuted:" + query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeConnection();
+        return result;
 
-		db.closeConnection();
-	}
+    }
+
+    public ArrayList<String> getList(String query) {
+        Statement statement;
+        ArrayList<String> result = new ArrayList<String>();
+        try {
+            statement = getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                result.add(rs.getString(1));
+            }
+            logger.info("query excuted:" + query);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        closeConnection();
+        return result;
+    }
+
+    public ArrayList<ArrayList<String>> getTable(String query) {
+        Statement statement;
+        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+        try {
+            statement = getConnection().createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                ArrayList<String> row = new ArrayList<String>();
+                for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                    row.add(rs.getString(i + 1));
+
+                }
+                result.add(row);
+            }
+            logger.info("query excuted:" + query);
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        closeConnection();
+        return result;
+    }
+
+    class Criterion {
+        private String key;
+        private String operator;
+        private String value;
+        private String criteriaOp;
+
+        public Criterion(String key, String operator, String value,
+                         String criteriaOp) {
+            this.key = key;
+            this.value = value;
+            this.operator = operator;
+            this.criteriaOp = criteriaOp;
+        }
+
+        @Override
+        public String toString() {
+            return key + operator + value + ' ' + criteriaOp;
+        }
+    }
+
+    class KeyValue {
+        private String key;
+        private String value;
+
+        public KeyValue(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return key + "=" + value;
+        }
+    }
 }

@@ -7,12 +7,15 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-
 import java.util.Arrays;
 
 import static org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY;
 import static org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY;
 
+
+/**
+ * enum class which maps browser with respective capabilities
+ */
 public enum Browser {
     htmlunit("default"),
     firefox("firefox"),
@@ -27,10 +30,6 @@ public enum Browser {
         this.browserName = browserName;
     }
 
-    public String getName() {
-        return this.browserName;
-    }
-
     public static Browser getBrowser(String name) {
         for (Browser browser : values()) {
             String browserName = browser.getName();
@@ -41,6 +40,15 @@ public enum Browser {
         return htmlunit;
     }
 
+    public String getName() {
+        return this.browserName;
+    }
+
+    /***
+     * This method returns the browser and capabilities
+     * @param browser
+     * @param capabilities
+     * */
     public WebDriver getWebDriver(Browser browser, DesiredCapabilities capabilities) {
         WebDriver driver;
         System.out.println("Existing web driver");
@@ -51,7 +59,11 @@ public enum Browser {
         return driver;
     }
 
-
+    /***
+     * Sets the capabilities based on browser type
+     * @param capabilities
+     * @param browser
+     * */
     public Browser setDesiredCapabilities(DesiredCapabilities capabilities, Browser browser) {
         String browserName = browser.name();
         System.out.println("Browser Name is" + browserName);
@@ -80,9 +92,14 @@ public enum Browser {
     }
 
 
+    /**
+     * Set chrome capabilities
+     *
+     * @param capabilities
+     */
     private void setChromeCapabilities(DesiredCapabilities capabilities) {
         capabilities.setCapability("chrome.switches", Arrays.asList("--start-maximized"));
-        capabilities.setCapability(CHROME_DRIVER_EXE_PROPERTY, System.getProperty("user.dir")+"/src/main/resources/drivers/chromedriver");
+        capabilities.setCapability(CHROME_DRIVER_EXE_PROPERTY, System.getProperty("user.dir") + "/src/main/resources/drivers/chromedriver");
         capabilities.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
     }
 
@@ -91,6 +108,11 @@ public enum Browser {
     }
 
 
+    /**
+     * Set firefox capabilities
+     *
+     * @param capabilities
+     */
     private void setFirefoxCapabilities(DesiredCapabilities capabilities) {
         FirefoxProfile firefoxProfile;
 
@@ -101,7 +123,7 @@ public enum Browser {
 
         firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
         firefoxProfile.setPreference("browser.helperApps.alwaysAsk.force", false);
-        firefoxProfile.setPreference("browser.download.manager.showWhenStarting",false);
+        firefoxProfile.setPreference("browser.download.manager.showWhenStarting", false);
         firefoxProfile.setPreference("browser.download.manager.alertOnEXEOpen", false);
         firefoxProfile.setPreference("browser.helperApps.neverAsk.saveToDisk", "text/csv,application/octet-stream,dmg");
         firefoxProfile.setPreference("plugin.state.rbjninstallplugin", 2);
@@ -117,9 +139,13 @@ public enum Browser {
         capabilities.setCapability(CapabilityType.TAKES_SCREENSHOT, true);
     }
 
-
+    /**
+     * Set IE capabilities
+     *
+     * @param capabilities
+     */
     private void setIeCapabilities(DesiredCapabilities capabilities) {
-        capabilities.setCapability(IE_DRIVER_EXE_PROPERTY, System.getProperty("user.dir")+"/src/main/resources/drivers/IEDriverServer.exe");
+        capabilities.setCapability(IE_DRIVER_EXE_PROPERTY, System.getProperty("user.dir") + "/src/main/resources/drivers/IEDriverServer.exe");
         capabilities.setCapability(
                 InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,
                 true);

@@ -6,6 +6,9 @@ import org.openqa.selenium.WebDriverException;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * This class to wait for driver to initialize only when required
+ */
 class WebDriverLazyLoader {
     private Class webDriverClass;
 

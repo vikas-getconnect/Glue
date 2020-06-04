@@ -9,13 +9,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 
-public class MockUITest extends UIBaseTest{
+public class MockUITest extends UIBaseTest {
     public static Logger logger = LoggerFactory.getLogger(MockUITest.class);
 
     public String getUrl() {
-        String url=null;
+        String url = null;
         try {
-            url= BrowserConfig.getUrl();
+            url = BrowserConfig.getUrl();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -25,19 +25,18 @@ public class MockUITest extends UIBaseTest{
 
     @Test(groups = {"signin"})
     public void testSignIn() throws Exception {
-        String url=getUrl();
+        String url = getUrl();
         driver.get(url);
-        LoginPage loginObj=new LoginPage(driver);
+        LoginPage loginObj = new LoginPage(driver);
         MyAccount myAccountObj = loginObj.login(BrowserConfig.getEmail(), BrowserConfig.getPassword());
-        String currentUrl=driver.getCurrentUrl();
-        logger.info("Current url:"+currentUrl);
-        Assert.assertEquals(currentUrl,"http://automationpractice.com/index.php?controller=my-account");
-        Assert.assertEquals("MY ACCOUNT",myAccountObj.getHeading());
+        String currentUrl = driver.getCurrentUrl();
+        logger.info("Current url:" + currentUrl);
+        Assert.assertEquals(currentUrl, "http://automationpractice.com/index.php?controller=my-account");
+        Assert.assertEquals("MY ACCOUNT", myAccountObj.getHeading());
         Assert.assertEquals(myAccountObj.getinfo(),
                 "Welcome to your account. Here you can manage all of your personal information and orders.");
-        Assert.assertEquals(myAccountObj.getAccountName(),BrowserConfig.getUsername());
+        Assert.assertEquals(myAccountObj.getAccountName(), BrowserConfig.getUsername());
     }
-
 
 
 }
